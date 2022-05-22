@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Col, Form, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import MainScreen from '../MainScreen/MainScreen';
-import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import Loading from '../Loading/Loading';
+import { register } from '../../actions/userActions';
+import { useNavigate } from 'react-router-dom';
 
 const RegisterForm = () => {
   const [email, setEmail] = useState('');
@@ -16,37 +18,29 @@ const RegisterForm = () => {
   const [confirmPassword, SetConfirmPassword] = useState('');
   const [message, setMessage] = useState(null);
   //   const [picMessage, setPicMessage] = useState(null);
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(false);
+  // const [error, setError] = useState(false);
+  // const [loading, setLoading] = useState(false);
+
+  const dispatch = useDispatch();
+
+  const userRegister = useSelector((state) => state.userRegister);
+  const { loading, error, userInfo } = userRegister;
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (userInfo) {
+      navigate('/mynotes');
+    }
+  }, [navigate, userInfo]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      setMessage('Password Do Not Match!!!');
+      setMessage('Password do not match');
     } else {
-      setMessage(null);
-      try {
-        const config = {
-          headers: {
-            'Context-type': 'application/json',
-          },
-        };
-
-        setLoading(true);
-
-        const { data } = await axios.post(
-          'http://localhost:5000/api/users',
-          { name, pic, email, password },
-          config
-        );
-
-        setLoading(false);
-        localStorage.setItem('userInfo', JSON.stringify(data));
-      } catch (error) {
-        setLoading(false);
-        setError(error.response.data.message);
-      }
+      dispatch(register(name, email, password));
     }
   };
 
