@@ -1,5 +1,9 @@
-const notes = [
-  {
+const notes = [];
+
+module.exports = notes;
+
+/*
+{
     _id: '1',
     title: 'Day 1 of college',
     content:
@@ -32,6 +36,4 @@ const notes = [
       'Made my first App in Node JS, feels awesome to learn something new. I aim to be a full stack dev someday',
     category: 'Learning',
   },
-];
-
-module.exports = notes;
+*/
